@@ -455,27 +455,6 @@ export default function Experience({
           qty: q.qty,
         };
       });
-      const r = await apiFetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: requestId.current,
-          cnpj,
-          phone,
-          name,
-          message,
-          source,
-          items,
-          website: "",
-        }),
-      });
-      const d = (await r.json()) as {
-        error?: string;
-        id: string;
-        simulated: boolean;
-        whatsappUrl: string;
-      };
-      if (!r.ok) throw Error(d.error);
       // O texto do WhatsApp e montado aqui, SEM dados do cliente (CNPJ,
       // telefone, nome): eles ficam apenas no registro interno da solicitacao.
       const waText = [
@@ -489,7 +468,35 @@ export default function Experience({
         .filter(Boolean)
         .join("\n");
       const waUrl = `https://api.whatsapp.com/send?phone=5547996180088&text=${encodeURIComponent(waText)}`;
-      setSuccess({ ...d, whatsappUrl: waUrl });
+      // Tenta registrar a solicitacao; indisponibilidade de rede/servidor
+      // nao bloqueia o cliente: o atendimento segue pelo WhatsApp.
+      let serverMsg = "";
+      try {
+        const r = await apiFetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: requestId.current,
+            cnpj,
+            phone,
+            name,
+            message,
+            source,
+            items,
+            website: "",
+          }),
+        });
+        const d = (await r.json()) as { error?: string };
+        if (!r.ok)
+          serverMsg = d.error || "Não foi possível registrar. Tente novamente.";
+      } catch {
+        /* registro indisponível — segue direto para o WhatsApp */
+      }
+      if (serverMsg) {
+        setError(serverMsg);
+        return;
+      }
+      setSuccess({ id: requestId.current, simulated: true, whatsappUrl: waUrl });
       window.location.assign(waUrl);
     } catch (e) {
       setError(

@@ -1,3 +1,10 @@
+# V2 — Correções do celular e resiliência do formulário — 13/11/2026 — v2.10.1
+
+- **Vitrine do hero centralizada no círculo em todas as larguras** (posições em px espelhando as órbitas por breakpoint, desvio 0px medido em 320/390/560/800/1120/1440) e peças ~15% maiores; `overflow-x:clip` no hero como proteção.
+- **Consulta de CNPJ com fallback direto ao OpenCNPJ** quando o servidor de apoio não responde (a origem nova do GitHub Pages não está na lista de CORS do Worker antigo) — testado ao vivo com cadastro real.
+- **Formulário nunca mais trava com "Load failed"**: o link do WhatsApp é montado no próprio navegador; se o registro interno estiver fora do ar, o cliente segue para o WhatsApp mesmo assim (erros de validação reais do servidor continuam sendo exibidos).
+- Validação: tsc 0 erros, build OK, Playwright 9/9 (centragem, scroll, CNPJ fallback, submit com servidor derrubado).
+
 # V2 — Busca inteligente e vitrine viva no hero — 13/11/2026 — v2.10.0
 
 - **Busca com tolerância**: nova camada de busca (lib/search.ts) que mantém os resultados exatos no topo e acrescenta plural/singular, sinônimos do vocabulário industrial (manopla→manípulo, sapata→pé nivelador, parabolt→chumbador etc.) e erro de digitação (distância 1–2 em palavras longas: "rolamente", "vertcal"). Aplicada na busca do topo e no filtro do catálogo; consulta vazia e ordenações preservadas.

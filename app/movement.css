@@ -83,13 +83,15 @@ html{scrollbar-gutter:stable;scroll-padding-top:105px}body{background:#f7f9fc}.t
 .detail-image-label,.pill{color:var(--muted)}
 
 /* ===== Vitrine rotativa do hero (2026-11): crossfade + flutuacao + tilt ===== */
-.assembly-main.showcase-stage{width:74%;left:14%;top:9%;aspect-ratio:1/1;perspective:950px;transform:translateY(calc(var(--travel)*22px));cursor:pointer;}
+.assembly-main.showcase-stage{width:520px;left:25px;top:18px;aspect-ratio:1/1;perspective:950px;transform:translateY(calc(var(--travel)*22px));cursor:pointer;}
+.movement-hero{overflow-x:clip;}
 .showcase-stage .showcase-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;visibility:hidden;transform:scale(.94) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:opacity .85s ease,visibility .85s,transform .85s cubic-bezier(.2,.7,.2,1);will-change:opacity,transform;}
 .showcase-stage .showcase-img.on{opacity:1;visibility:visible;transform:scale(1) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));animation:showcase-float 7s ease-in-out infinite;}
 @keyframes showcase-float{0%,100%{translate:0 0}50%{translate:0 -9px}}
-@media (max-width:1120px){.assembly-main.showcase-stage{width:84%;left:8%;top:11%;}}
-@media (max-width:800px){.assembly-main.showcase-stage{width:92%;left:4%;top:13%;}}
-@media (max-width:560px){.assembly-main.showcase-stage{width:76%;left:14%;top:9%;}}
+@media (max-width:1120px){.assembly-main.showcase-stage{width:430px;left:-5px;top:30px;}}
+@media (max-width:800px){.assembly-main.showcase-stage{width:350px;left:-10px;top:44px;}}
+@media (max-width:560px){.assembly-main.showcase-stage{width:300px;left:30px;top:15px;}}
+@media (max-width:374px){.assembly-main.showcase-stage{width:270px;left:8px;top:15px;}}
 @media (prefers-reduced-motion:reduce){.showcase-stage .showcase-img{animation:none!important;transition:opacity .2s;transform:none;}}
 .assembly-part img.alpha-img{mix-blend-mode:normal;}
 .assembly-part.alpha{mix-blend-mode:normal;}
