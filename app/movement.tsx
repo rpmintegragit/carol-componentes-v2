@@ -14,6 +14,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Instagram, Facebook, Linkedin } from "./social-icons";
+import { Pic } from "./pic";
 import {
   shortName,
   pdf,
@@ -163,7 +164,7 @@ export function MovementHero({
                       key={p.id}
                       onClick={() => select(p)}
                     >
-                      <img src={p.image} alt="" />
+                      <Pic src={p.image} alt="" loading="lazy" />
                       <span>
                         <strong>{shortName(p)}</strong>
                         <small>
@@ -222,7 +223,8 @@ export function MovementHero({
             onClick={() => onProduct(wheel)}
             aria-label={`Conhecer ${shortName(wheel)}`}
           >
-            <img
+            <Pic
+              large
               onLoad={(e) => e.currentTarget.classList.add("wheel-ready")}
               className="wheel-image"
               src={wheel.image}
@@ -235,7 +237,7 @@ export function MovementHero({
             onClick={() => onProduct(lever)}
             aria-label={`Conhecer ${shortName(lever)}`}
           >
-            <img src={lever.image} alt={shortName(lever)} />
+            <Pic src={lever.image} alt={shortName(lever)} />
             <span>
               Fixar <ArrowUpRight size={14} />
             </span>
@@ -245,7 +247,7 @@ export function MovementHero({
             onClick={() => onProduct(foot)}
             aria-label={`Conhecer ${shortName(foot)}`}
           >
-            <img src={foot.image} alt={shortName(foot)} />
+            <Pic src={foot.image} alt={shortName(foot)} />
             <span>
               Apoiar <ArrowUpRight size={14} />
             </span>

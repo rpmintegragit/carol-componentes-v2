@@ -6,3 +6,7 @@ copyFileSync('dist-pages/index.html','dist-pages/404.html');
 writeFileSync('dist-pages/.nojekyll','');
 
 mkdirSync('dist-pages/admin',{recursive:true});copyFileSync('dist-pages/index.html','dist-pages/admin/index.html');
+
+// SEO: paginas estaticas por produto (HTTP 200), sitemap, robots e OG da home.
+const seo=spawnSync(process.execPath,['scripts/generate-seo.mjs'],{stdio:'inherit'});
+if(seo.status!==0)process.exit(seo.status||1);

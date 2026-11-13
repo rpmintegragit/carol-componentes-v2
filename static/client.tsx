@@ -1,6 +1,5 @@
+import {lazy,Suspense} from 'react';
 import {createRoot} from 'react-dom/client';
-import Experience from '../app/experience';
-import {validCnpj,normalizedPhone,maskCnpj,maskPhone} from '../lib/validation';
 import {GET as shipping} from '../app/api/frete/route';
 import '../app/globals.css';
 import '../app/movement.css';
@@ -14,6 +13,10 @@ window.fetch=async(input,init)=>{
  if(url.origin===location.origin&&url.pathname==='/api/frete')return shipping(new Request(url));
  return originalFetch(input,init);
 };
+// Code-split: o catálogo (dados + experiência) carrega como chunk separado,
+// permitindo primeira pintura imediata do shell.
+const Experience=lazy(()=>import('../app/experience'));
 const pathname=decodeURIComponent(location.pathname.slice(base.length));
 const slug=pathname.startsWith('produto/')?pathname.slice(8).replace(/\/$/,''):undefined;
-if(pathname.replace(/\/$/,'')==='admin'){import('../app/admin-client').then(({default:Admin})=>createRoot(document.getElementById('root')!).render(<Admin/>))}else createRoot(document.getElementById('root')!).render(<Experience initialProduct={slug}/>);
+const boot=<div className="boot-splash" aria-live="polite"><p>Carol Componentes</p></div>;
+if(pathname.replace(/\/$/,'')==='admin'){import('../app/admin-client').then(({default:Admin})=>createRoot(document.getElementById('root')!).render(<Admin/>))}else createRoot(document.getElementById('root')!).render(<Suspense fallback={boot}><Experience initialProduct={slug}/></Suspense>);

@@ -1,3 +1,24 @@
+# V2 — Performance, SEO e mobile (RPM Integra) — 12/11/2026 — v2.8.0
+
+## Peso de página, imagens e fontes
+- **Imagens de produto otimizadas**: gerados 2.212 arquivos WebP (`.thumb.webp` 480px para cards e `.large.webp` 1400px para a galeria) por `scripts/generate-webp.py` (idempotente; originais preservados). Novo componente `app/pic.tsx` serve a variante correta com fallback automático ao original. Primeira carga da home caiu de ~5,4 MB para menos de 1 MB em rede real.
+- **Fontes em WOFF2**: os 9 arquivos TTF (Barlow e Source Sans) ganharam versão .woff2 (~70% menores), com `src` em cascata woff2→ttf e preload dos dois pesos principais em `static/index.html`.
+- **Code-split do catálogo**: `static/client.tsx` agora carrega a experiência via `lazy()`; o bundle inicial do Pages caiu para ~62 KB gzip e o catálogo chega como chunk separado.
+
+## SEO (GitHub Pages / Cloudflare Pages)
+- **228 páginas estáticas por produto** em `produto/<slug>/index.html` (HTTP 200) com título próprio, meta description, canonical, Open Graph com foto e JSON-LD Product (sem preço, conforme regra do projeto). Geradas por `scripts/generate-seo.mjs`, encadeado no `build:pages`.
+- **sitemap.xml (229 URLs), robots.txt e Open Graph na home.** Origem configurável por `CAROL_SITE_ORIGIN` (padrão rpmintegragit.github.io) para a migração futura de domínio.
+
+## Mobile e vitrine
+- **Eliminado o scroll horizontal** em 320/390/768/1024/1440 px. Causas corrigidas: carrossel de marcas sem clip (`.brand-window`), grid do catálogo sem `min-width:0` (um `<select>` ditava 826px de largura mínima), faixa de filtros sem rolagem própria e paginação sem quebra de linha.
+- **Scans de tabela de catálogo** (arquivos `pagina-N`) agora são exibidos como documento (fundo branco, `object-fit:contain`) via `data-doc`, sem inventar fotos — regra do projeto preservada.
+- **"Preço sob consulta" repetido** nos cards deu lugar ao aviso discreto "Cotação pelo WhatsApp" (`.quote-hint`); a página do produto mantém o texto completo.
+- **Botão flutuante do WhatsApp** vira disco compacto no celular e deixa de cobrir conteúdo.
+
+## Validação e limites
+- `npx tsc --noEmit`, `npm run build:pages` e `npm run build` (Worker) com 0 erros; teste em navegador real (Playwright) nas 5 larguras e na página de produto pré-renderizada.
+- Limites: as páginas estáticas de produto dependem do `build:pages`; o zoom da galeria continua servindo o arquivo original em resolução máxima; nada foi alterado na V1 nem nos dados do catálogo.
+
 # V2 — Catálogo preparado para reconstrução — 19/10/2026
 
 ## Inversão de filtros (Fornecedor no topo), padronização integral de famílias e mitigação de cache Pages — 20/10/2026
