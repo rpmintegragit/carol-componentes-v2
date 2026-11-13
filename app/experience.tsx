@@ -54,6 +54,7 @@ import {
   type Product,
 } from "@/lib/catalog";
 import { BrandPartners, ContactDetails, PaymentMethods } from "./showcase";
+import { Pic } from "./pic";
 import { WhatsAppIcon } from "./whatsapp-icon";
 import {
   validCnpj,
@@ -499,7 +500,7 @@ export default function Experience({
               openProduct(p);
             }}
           >
-            <img src={p.image} alt={shortName(p)} loading="lazy" />
+            <Pic src={p.image} alt={shortName(p)} loading="lazy" />
           </a>
           <button
             className={`favorite ${saved.includes(p.id) ? "active" : ""}`}
@@ -527,7 +528,11 @@ export default function Experience({
           </a>
           <p>
             {p.brand}{" "}
-            <span>{p.price ? currency(p.price) : "Preço sob consulta"}</span>
+            {p.price ? (
+              <span>{currency(p.price)}</span>
+            ) : (
+              <span className="quote-hint">Cotação pelo WhatsApp</span>
+            )}
           </p>
           <div className="card-actions">
             <a
@@ -684,7 +689,7 @@ export default function Experience({
         <div className="detail-layout">
           <div className="detail-gallery">
             <div className="detail-image">
-              <img src={currentImage} alt={shortName(detail)} />
+              <Pic large src={currentImage || detail.image} alt={shortName(detail)} />
               <button onClick={() => setZoom(true)} aria-label="Ampliar imagem">
                 <ZoomIn size={23} />
               </button>
@@ -703,7 +708,7 @@ export default function Experience({
                       aria-pressed={currentImage === image}
                       onClick={() => setSelectedPhoto(image)}
                     >
-                      <img
+                      <Pic
                         src={image}
                         alt={`Foto ${i + 1} de ${shortName(detail)}`}
                         loading="lazy"
@@ -1612,7 +1617,7 @@ export default function Experience({
                       <X size={18} />
                     </button>
                   </div>
-                  <img src={p.image} alt={shortName(p)} />
+                  <Pic src={p.image} alt={shortName(p)} />
                   <h3>{shortName(p)}</h3>
                   <dl>
                     <div>
@@ -1665,7 +1670,7 @@ export default function Experience({
                     const p = products.find((p) => p.id === id)!;
                     return (
                       <th key={id}>
-                        <img src={p.image} alt="" />
+                        <Pic src={p.image} alt="" />
                         <a
                           href={`/produto/${p.slug}`}
                           onClick={(e) => {
@@ -1732,7 +1737,7 @@ export default function Experience({
                   const p = products.find((p) => p.id === q.id)!;
                   return (
                     <div className="quote-item" key={q.key}>
-                      <img src={p.image} alt="" />
+                      <Pic src={p.image} alt="" />
                       <div>
                         <strong>{shortName(p)}</strong>
                         <small>

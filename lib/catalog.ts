@@ -11,3 +11,7 @@ export const pdf='/downloads/catalogo-carol-componentes.pdf';
 export const shortName=(p:Product)=>p.name.replace(/\s*\/\s*Merkbak/ig,'').replace(/\s*Merkbak$/i,'');
 export const code=(p:Product)=>p.sku||shortName(p).split(/\s*[–—-]\s*/)[0];
 export const normalize=(s:string)=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const optimizable=(src:string)=>src.includes('/images/products/')&&/\.(png|jpe?g)$/i.test(src);
+export const cardImage=(src:string)=>optimizable(src)?src.replace(/\.(png|jpe?g)$/i,'.thumb.webp'):src;
+export const largeImage=(src:string)=>optimizable(src)?src.replace(/\.(png|jpe?g)$/i,'.large.webp'):src;
+export const isDocScan=(src:string)=>/(^|\/)(visual-)?pagina-\d+[^/]*\.(png|jpe?g|webp)$/i.test(src);
