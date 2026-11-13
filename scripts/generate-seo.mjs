@@ -32,10 +32,46 @@ const og = (title, desc, url, image, type = 'website') => [
   `<meta name="twitter:card" content="summary_large_image"/>`,
 ].join('');
 
-// Home: injeta OG
+// Analytics/Ads: injetado em todas as paginas SOMENTE se CAROL_GA_ID estiver
+// definido no build (ex.: G-XXXXXXX). Sem ID, nenhum rastreador entra no site.
+const GA = process.env.CAROL_GA_ID || '';
+const gaSnippet = GA
+  ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${GA}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','${GA}');</script>`
+  : '';
+const withGa = (html) => (gaSnippet ? html.replace('</head>', gaSnippet + '</head>') : html);
+
+// Home: injeta OG + dados de negocio local (busca local / Google Maps)
 const homeImage = abs('/images/brand/carol-logo.png');
 const homeDesc = 'Componentes industriais em Joinville com envio para todo o Brasil: fixação, retenção, grampos, amortecedores de vibração, elementos de máquinas e mais.';
-let home = template.replace('<title>', og('Carol Componentes | Componentes industriais', homeDesc, SITE, homeImage) + '<title>');
+const localBusiness = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Store',
+  name: 'Carol Componentes Industriais',
+  url: SITE,
+  image: homeImage,
+  telephone: '+554734350101',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Rua Carlos Willy Boehm, 537 — Santo Antônio',
+    addressLocality: 'Joinville',
+    addressRegion: 'SC',
+    postalCode: '89218-301',
+    addressCountry: 'BR',
+  },
+  openingHoursSpecification: [
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday'], opens: '08:00', closes: '12:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday'], opens: '13:00', closes: '18:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Friday', opens: '08:00', closes: '12:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Friday', opens: '13:00', closes: '17:00' },
+  ],
+});
+let home = template.replace(
+  '<title>',
+  og('Carol Componentes | Componentes industriais', homeDesc, SITE, homeImage) +
+    `<script type="application/ld+json">${localBusiness}</script>` +
+    '<title>',
+);
+home = withGa(home);
 writeFileSync(path.join(DIST, 'index.html'), home);
 writeFileSync(path.join(DIST, '404.html'), home);
 
@@ -65,7 +101,7 @@ for (const p of products) {
     .replace('<title>', head + '<title>');
   const dir = path.join(DIST, 'produto', p.slug);
   mkdirSync(dir, { recursive: true });
-  writeFileSync(path.join(dir, 'index.html'), page);
+  writeFileSync(path.join(dir, 'index.html'), withGa(page));
   count++;
 }
 

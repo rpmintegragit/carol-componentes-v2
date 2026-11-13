@@ -2,7 +2,9 @@
 
 Leia primeiro README.md, docs/HANDOFF-IA.md, DEPLOY_MANUAL.md, CHANGELOG.md e docs/DATA.md e docs/ADMINISTRACAO.md. Este é o projeto Carol; não altere o projeto RFK.
 
-A história é a linha do tempo de QUATRO marcos em app/movement.tsx. Nunca restaurar os três passos comerciais Encontre/Converse/Coloque. 1984 vem do LinkedIn da operação; demais datas são proposta fictícia autorizada pelo usuário, mantidas como proposta editorial no histórico; nota visível removida por solicitação do usuário. Valide datas antes de lançamento oficial.
+A história é a linha do tempo de QUATRO marcos em app/movement.tsx. Nunca restaurar os três passos comerciais Encontre/Converse/Coloque. **12/11/2026: os textos e datas (1984, 1994, 2007, 2026) são os OFICIAIS fornecidos pelo cliente — não reescrever sem ordem de Ramon.**
+
+Decisões do cliente em 12/11/2026 (não reverter sem ordem): slogan do hero "Conectando peças, soluções e indústrias."; menu "Produtos" (não "Componentes") com mega menu de famílias no hover; filtro de fornecedor removido da barra lateral; carrossel de marcas movido para o fim da página (sem Quimatic); seção "Todas as famílias" no fim (app/families-index.tsx + lib/family-groups.ts); seções de redes sociais e de cartões/pagamentos REMOVIDAS do site; horário: seg–qui 08h–12h/13h–18h, sex 08h–12h/13h–17h; o texto pré-preenchido do WhatsApp NÃO leva dados do cliente (CNPJ/telefone/nome — ficam só no registro interno de leads).
 
 Preservar único WhatsApp 5547996180088. Não introduzir contatos de Curitiba. Contatos exibidos: vendas@carolcomponentes.com.br e lojavirtual@carolcomponentes.com.br; exibição não significa caixas provisionadas. Envio real requer RESEND_API_KEY e EMAIL_FROM no servidor; sem eles, registrar como pendente. Nunca afirmar entrega sem confirmação do provedor.
 

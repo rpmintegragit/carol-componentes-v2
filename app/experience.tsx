@@ -4,7 +4,6 @@ import {
   MovementHero,
   MotionStory,
   NationalPresence,
-  SocialConnections,
 } from "./movement";
 import {
   Dialog,
@@ -53,8 +52,12 @@ import {
   normalize,
   type Product,
 } from "@/lib/catalog";
-import { BrandPartners, ContactDetails, PaymentMethods } from "./showcase";
+import { BrandPartners, ContactDetails } from "./showcase";
 import { Pic } from "./pic";
+import { FamiliesIndex } from "./families-index";
+import { familyGroups } from "@/lib/family-groups";
+
+const megaGroups = familyGroups();
 import { WhatsAppIcon } from "./whatsapp-icon";
 import {
   validCnpj,
@@ -476,8 +479,21 @@ export default function Experience({
         whatsappUrl: string;
       };
       if (!r.ok) throw Error(d.error);
-      setSuccess(d);
-      window.location.assign(d.whatsappUrl);
+      // O texto do WhatsApp e montado aqui, SEM dados do cliente (CNPJ,
+      // telefone, nome): eles ficam apenas no registro interno da solicitacao.
+      const waText = [
+        "Olá! Gostaria de uma cotação com a Carol Componentes — Joinville.",
+        `Interesse: ${source || "Contato geral"}`,
+        ...items.map(
+          (i) => `${i.qty} × ${i.name}${i.variant ? " | " + i.variant : ""}`,
+        ),
+        message ? `Mensagem: ${message}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n");
+      const waUrl = `https://api.whatsapp.com/send?phone=5547996180088&text=${encodeURIComponent(waText)}`;
+      setSuccess({ ...d, whatsappUrl: waUrl });
+      window.location.assign(waUrl);
     } catch (e) {
       setError(
         e instanceof Error
@@ -553,7 +569,7 @@ export default function Experience({
               aria-pressed={compare.includes(p.id)}
               aria-label={`Comparar ${shortName(p)}`}
             >
-              <Columns3 size={18} />
+              <MessageCircle size={18} />
               <span>{compare.includes(p.id) ? "Selecionado" : "Comparar"}</span>
             </button>
           </div>
@@ -803,7 +819,7 @@ export default function Experience({
                 )
               }
             >
-              <MessageCircle size={19} /> Cotar este componente
+              <Columns3 size={19} /> Cotar este componente
             </button>
             <p className="micro">Preço, disponibilidade e condições comerciais serão informados pela Carol Componentes na cotação.</p>
           </div>
@@ -1022,8 +1038,32 @@ export default function Experience({
                 goSection("catalogo");
               }}
             >
-              Componentes
+              Produtos
             </a>
+            <div className="mega-panel" role="menu" aria-label="Famílias de produtos">
+              <div className="mega-inner">
+                {megaGroups.map((g) => (
+                  <div className="mega-column" key={g.group}>
+                    <strong>{g.group}</strong>
+                    {g.items.map((f) => (
+                      <button
+                        key={f.name}
+                        role="menuitem"
+                        onClick={(e) => {
+                          e.currentTarget.blur();
+                          setSupplier("Todos");
+                          setCat(f.name);
+                          setPage(1);
+                          goSection("catalogo");
+                        }}
+                      >
+                        {f.name} <span>{f.count}</span>
+                      </button>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
             <a
               href="/#tecnico"
               aria-current={
@@ -1105,7 +1145,6 @@ export default function Experience({
             onBrowse={() => goSection("catalogo")}
           />
 
-          <BrandPartners onContact={openContact} />
           <section id="catalogo" className="catalog-section section">
             <div className="container">
               <div className="section-head">
@@ -1119,36 +1158,6 @@ export default function Experience({
               </div>
               <div className="catalog-layout">
                 <aside className="filters">
-                  <div className="filter-title supplier-filter-title">
-                    <Building2 size={18} />
-                    <strong>Fornecedor</strong>
-                  </div>
-                  <button
-                    className={supplier === "Todos" ? "selected" : ""}
-                    onClick={() => {
-                      setSupplier("Todos");
-                      setCat("Todas");
-                      setPage(1);
-                    }}
-                  >
-                    Todos os fornecedores <span>{products.length}</span>
-                  </button>
-                  {suppliers.map((name) => (
-                    <button
-                      key={name}
-                      className={supplier === name ? "selected" : ""}
-                      onClick={() => {
-                        setSupplier(name);
-                        setCat("Todas");
-                        setPage(1);
-                      }}
-                    >
-                      {name}
-                      <span>
-                        {products.filter((p) => (p.supplier || p.brand) === name).length}
-                      </span>
-                    </button>
-                  ))}
                   <div className="filter-title families-filter-title">
                     <Layers size={18} />
                     <strong>Famílias</strong>
@@ -1420,7 +1429,15 @@ export default function Experience({
           <NationalPresence
             onContact={() => openContact("Entrega para todo o Brasil")}
           />
-          <SocialConnections />
+          <FamiliesIndex
+            onFamily={(name) => {
+              setSupplier("Todos");
+              setCat(name);
+              setPage(1);
+              goSection("catalogo");
+            }}
+          />
+          <BrandPartners onContact={openContact} />
         </main>
       ) : (
         renderDetail()
@@ -1440,7 +1457,6 @@ export default function Experience({
         </div>
       </section>
       <ContactDetails onContact={openContact} />
-      <PaymentMethods />
       <footer className="footer">
         <div className="container footer-grid">
           <div>
@@ -1465,7 +1481,7 @@ export default function Experience({
           </div>
           <div>
             <strong>Explore</strong>
-            <a href="/#catalogo">Componentes</a>
+            <a href="/#catalogo">Produtos</a>
             <a href="/#tecnico">Catálogo técnico</a>
             <a href="/#empresa">A Carol</a>
             <a href="/#conexoes">Nas redes</a>

@@ -16,7 +16,8 @@ export async function POST(request:Request){
   if(!previous){const recent=await db.select({count:sql<number>`count(*)`}).from(leads).where(and(gt(leads.createdAt,Date.now()-60000),sql`json_extract(${leads.payload}, '$.phone') = ${phone}`)).get();if((recent?.count||0)>=5)return Response.json({error:'Aguarde um minuto antes de tentar novamente.'},{status:429});
    await db.insert(leads).values({id:input.id,payload:JSON.stringify({cnpj,phone,name,message,source,items,recipient:'ramonpmendesx@gmail.com',mode:'demo'}),createdAt:Date.now(),simulated:1});
   }
-  const text=['Olá! Gostaria de uma cotação com a Carol Componentes — Joinville.',`CNPJ: ${cnpj}`,`Telefone: ${phone}`,name?`Nome: ${name}`:'',`Interesse: ${source}`,...items.map((i:{name:string;variant:string;qty:number})=>`${i.qty} × ${i.name}${i.variant?' | '+i.variant:''}`),message?`Mensagem: ${message}`:''].filter(Boolean).join('\n');
+  // Sem dados do cliente (CNPJ/telefone/nome) no texto do WhatsApp: ficam so no registro interno.
+  const text=['Olá! Gostaria de uma cotação com a Carol Componentes — Joinville.',`Interesse: ${source}`,...items.map((i:{name:string;variant:string;qty:number})=>`${i.qty} × ${i.name}${i.variant?' | '+i.variant:''}`),message?`Mensagem: ${message}`:''].filter(Boolean).join('\n');
   return Response.json({id:input.id,simulated:true,whatsappUrl:`https://api.whatsapp.com/send?phone=5547996180088&text=${encodeURIComponent(text)}`});
  }catch{return Response.json({error:'Não foi possível registrar seu contato. Tente novamente.'},{status:503});}
 }

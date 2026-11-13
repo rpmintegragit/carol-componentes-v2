@@ -91,15 +91,14 @@ export function MovementHero({
       <div className="container movement-opening">
         <div className="movement-copy">
           <h1>
-            Cada peça,
+            Conectando peças,
             <br />
-            um novo
-            <br />
-            movimento.
+            soluções
+            <br />e indústrias.
           </h1>
           <p className="movement-description">
-            Da manutenção ao próximo projeto. Encontre o componente, escolha a
-            medida e converse com quem entende a sua aplicação.
+            Da manutenção ao próximo projeto, componentes que acompanham a
+            evolução da indústria.
           </p>
           <form
             ref={search}
@@ -312,23 +311,23 @@ export function MotionStory({ onContact }: { onContact: () => void }) {
   const milestones = [
     {
       year: "1984",
-      title: "Começa uma relação de confiança.",
-      text: "A origem de uma trajetória dedicada a aproximar a indústria dos componentes de que precisa.",
+      title: "O início de uma história",
+      text: "Em 1984, nascia em Joinville, um dos maiores polos industriais de Santa Catarina, a Carol Rolamentos. Com foco no fornecimento de rolamentos para a indústria, iniciou sua trajetória no mercado local, expandindo gradualmente sua atuação regional e estadual. O primeiro capítulo de uma história marcada pela evolução e pelo compromisso com a indústria.",
     },
     {
-      year: "2000",
-      title: "Mais soluções, novas conexões.",
-      text: "O portfólio se amplia com componentes nacionais e importados e parcerias que atravessam fronteiras.",
+      year: "1994",
+      title: "Fortalecimento e expansão",
+      text: "Sob nova direção, a Carol Rolamentos iniciou uma fase de crescimento e consolidação no mercado industrial. Ampliou seu portfólio com linhas de fixação e componentes para máquinas, estabeleceu parcerias com marcas tradicionais e fortaleceu sua presença em feiras industriais. Sua atuação ultrapassou gradualmente as fronteiras de Santa Catarina, conquistando novos mercados e ampliando seu reconhecimento como distribuidora.",
     },
     {
-      year: "2014",
-      title: "Experiência encontra tecnologia.",
-      text: "O conhecimento técnico se conecta ao atendimento digital, tornando a escolha de peças mais ágil.",
+      year: "2007",
+      title: "Estrutura para crescer",
+      text: "Com a conquista da sede própria, a Carol Rolamentos iniciou uma nova etapa de expansão e fortalecimento de sua estrutura. A ampliação da capacidade de armazenagem e o investimento em importações possibilitaram estoques mais robustos, maior poder de negociação e competitividade. Um passo decisivo para consolidar sua atuação como distribuidora de componentes industriais.",
     },
     {
       year: "2026",
-      title: "Um novo nome. A mesma essência.",
-      text: "Carol Componentes: a continuidade da equipe de Joinville, com atendimento próximo e envio para todo o Brasil.",
+      title: "Evolução sem perder a essência",
+      text: "Com mais de 40 anos de história e uma gestão que reúne 30 anos de experiência na empresa, a Carol inicia um novo capítulo de transformação e renovação. A Carol Rolamentos evolui para Carol Componentes Industriais, uma identidade que reflete a diversidade de seu portfólio, com mais de 16 mil itens. Evoluímos sem perder a essência, com o propósito de atender cada vez melhor nossos clientes, acompanhar as necessidades da indústria brasileira e fortalecer parcerias. Preservamos nossa história enquanto construímos um novo capítulo, marcado pela inovação e pelo compromisso com o futuro.",
     },
   ];
   return (

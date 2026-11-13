@@ -1,3 +1,16 @@
+# V2 — Identidade comercial e navegação por famílias — 12/11/2026 — v2.9.0
+
+- Slogan novo no hero: "Conectando peças, soluções e indústrias." + subtítulo oficial.
+- Menu "Produtos" (antes "Componentes") com mega menu de famílias no hover (desktop), agrupado em 5 grupos editoriais (lib/family-groups.ts); clique filtra o catálogo.
+- Filtro de fornecedor removido da barra lateral; Quimatic removida das marcas; carrossel de marcas movido para o fim da página; nova seção "Todas as famílias" (app/families-index.tsx) antes dele.
+- Linha do tempo com os textos oficiais do cliente (1984, 1994, 2007, 2026).
+- Removidas as seções de redes sociais e de formas de pagamento; horário atualizado (seg–qui 08h–12h·13h–18h, sex até 17h).
+- Texto pré-preenchido do WhatsApp sem dados do cliente (CNPJ/telefone/nome ficam só no registro interno) — montado no cliente e também corrigido na rota do Worker.
+- Ícones trocados entre "Cotar este componente" e "Comparar".
+- SEO/divulgação: JSON-LD de negócio local (endereço, telefone, horários) na home; Google Analytics/Ads opcional via env CAROL_GA_ID (sem ID, nenhum rastreador).
+- Preview local agora serve index.html de subpastas (igual ao GitHub Pages).
+- Validação: tsc 0 erros, build:pages OK, bateria Playwright 24/24 (desktop e 390px; formulário com interceptação confirmando WhatsApp sem dados pessoais).
+
 # V2 — Performance, SEO e mobile (RPM Integra) — 12/11/2026 — v2.8.0
 
 ## Peso de página, imagens e fontes
