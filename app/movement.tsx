@@ -15,6 +15,29 @@ import {
 } from "lucide-react";
 import { Instagram, Facebook, Linkedin } from "./social-icons";
 import { Pic } from "./pic";
+import { searchProducts } from "@/lib/search";
+
+// Vitrine do hero: as três peças em revezamento suave (sem o giro antigo).
+const SHOWCASE = [
+  {
+    slug: "vibra-stop-tradicional-com-chapa",
+    verb: "Amortecer",
+    line: "Absorve vibração e impacto da operação",
+    img: "/images/hero/tradicional-com-chapa.webp",
+  },
+  {
+    slug: "vibra-stop-flex-com-2-chapas",
+    verb: "Flexionar",
+    line: "Mola de aço entre chapas para cargas dinâmicas",
+    img: "/images/hero/flex-com-2-chapas.webp",
+  },
+  {
+    slug: "merkbak-pna-pe-nivelador-articulado",
+    verb: "Nivelar",
+    line: "Base articulada firme em qualquer piso",
+    img: "/images/hero/pna-pe-nivelador.webp",
+  },
+];
 import {
   shortName,
   pdf,
@@ -39,16 +62,24 @@ export function MovementHero({
     search = useRef<HTMLFormElement>(null);
   const [open, setOpen] = useState(false),
     [index, setIndex] = useState(-1);
-  const wheel = products.find((p) => p.supplier === "Merkbak") || products[0],
-    lever = products.find((p) => p.supplier === "Kifix") || wheel,
-    foot = products.find((p) => p.supplier === "Vibra-Stop") || wheel;
-  const results = products
-    .filter((p) =>
-      normalize(
-        p.name + " " + p.variations.map((v) => v.label).join(" "),
-      ).includes(normalize(query)),
-    )
-    .slice(0, 5);
+  const trio = SHOWCASE.map((s) => ({
+    ...s,
+    p: products.find((p) => p.slug === s.slug),
+  })).filter((x): x is (typeof SHOWCASE)[number] & { p: Product } => !!x.p);
+  const [active, setActive] = useState(0);
+  const showcasePaused = useRef(false);
+  useEffect(() => {
+    if (trio.length < 2) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setActive(Math.floor(Math.random() * trio.length));
+    const id = setInterval(() => {
+      if (!showcasePaused.current && !document.hidden)
+        setActive((a) => (a + 1) % trio.length);
+    }, 6000);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trio.length]);
+  const results = searchProducts(query).slice(0, 5);
   useEffect(() => {
     let frame = 0;
     const tick = () => {
@@ -206,56 +237,64 @@ export function MovementHero({
             <MapPin size={16} /> Atendimento próximo. Envio para todo o Brasil.
           </p>
         </div>
-        {wheel && <div className="movement-assembly" aria-label="Componentes de máquinas">
+        {trio.length === 3 && <div
+          className="movement-assembly"
+          aria-label="Componentes em destaque"
+          onPointerEnter={() => { showcasePaused.current = true; }}
+          onPointerLeave={() => { showcasePaused.current = false; }}
+        >
           <div className="machining-orbit orbit-one" />
           <div className="machining-orbit orbit-two" />
           <span className="assembly-cross cross-top" />
           <span className="assembly-cross cross-bottom" />
           <button
-            className="assembly-main"
-            onPointerEnter={(e) => {
-              e.currentTarget.style.setProperty("--hover-turn", "155deg");
+            className="assembly-main showcase-stage"
+            onClick={() => onProduct(trio[active].p)}
+            aria-label={`Conhecer ${shortName(trio[active].p)}`}
+            onPointerMove={(e) => {
+              if (e.pointerType !== "mouse") return;
+              const r = e.currentTarget.getBoundingClientRect();
+              const x = (e.clientX - r.left) / r.width - 0.5;
+              const y = (e.clientY - r.top) / r.height - 0.5;
+              e.currentTarget.style.setProperty("--ry", `${(x * 7).toFixed(2)}deg`);
+              e.currentTarget.style.setProperty("--rx", `${(-y * 7).toFixed(2)}deg`);
             }}
             onPointerLeave={(e) => {
-              e.currentTarget.style.setProperty("--hover-turn", "0deg");
+              e.currentTarget.style.setProperty("--ry", "0deg");
+              e.currentTarget.style.setProperty("--rx", "0deg");
             }}
-            onClick={() => onProduct(wheel)}
-            aria-label={`Conhecer ${shortName(wheel)}`}
           >
-            <Pic
-              large
-              onLoad={(e) => e.currentTarget.classList.add("wheel-ready")}
-              className="wheel-image"
-              src={wheel.image}
-              alt={shortName(wheel)}
-              fetchPriority="high"
-            />
+            {trio.map((t, i) => (
+              <img
+                key={t.slug}
+                className={`showcase-img ${i === active ? "on" : ""}`}
+                src={t.img}
+                alt={i === active ? shortName(t.p) : ""}
+                fetchPriority={i === active ? "high" : undefined}
+              />
+            ))}
           </button>
-          <button
-            className="assembly-part assembly-lever"
-            onClick={() => onProduct(lever)}
-            aria-label={`Conhecer ${shortName(lever)}`}
-          >
-            <Pic src={lever.image} alt={shortName(lever)} />
-            <span>
-              Fixar <ArrowUpRight size={14} />
-            </span>
-          </button>
-          <button
-            className="assembly-part assembly-foot"
-            onClick={() => onProduct(foot)}
-            aria-label={`Conhecer ${shortName(foot)}`}
-          >
-            <Pic src={foot.image} alt={shortName(foot)} />
-            <span>
-              Apoiar <ArrowUpRight size={14} />
-            </span>
-          </button>
+          {trio
+            .map((t, i) => ({ ...t, i }))
+            .filter((t) => t.i !== active)
+            .map((t, j) => (
+              <button
+                key={t.slug}
+                className={`assembly-part ${j === 0 ? "assembly-lever" : "assembly-foot"}`}
+                onClick={() => setActive(t.i)}
+                aria-label={`Destacar ${shortName(t.p)}`}
+              >
+                <img className="alpha-img" src={t.img} alt="" loading="lazy" />
+                <span>
+                  {t.verb} <ArrowUpRight size={14} />
+                </span>
+              </button>
+            ))}
           <div className="assembly-reference">
             <span className="reference-line" />
-            <button onClick={() => onProduct(wheel)}>
-              <strong>{wheel.sku || wheel.supplier}</strong>
-              <span>Controle em cada giro</span>
+            <button onClick={() => onProduct(trio[active].p)}>
+              <strong>{trio[active].verb}</strong>
+              <span>{trio[active].line}</span>
               <ArrowUpRight size={20} />
             </button>
           </div>

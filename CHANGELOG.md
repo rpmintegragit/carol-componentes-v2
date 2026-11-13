@@ -1,3 +1,10 @@
+# V2 — Busca inteligente e vitrine viva no hero — 13/11/2026 — v2.10.0
+
+- **Busca com tolerância**: nova camada de busca (lib/search.ts) que mantém os resultados exatos no topo e acrescenta plural/singular, sinônimos do vocabulário industrial (manopla→manípulo, sapata→pé nivelador, parabolt→chumbador etc.) e erro de digitação (distância 1–2 em palavras longas: "rolamente", "vertcal"). Aplicada na busca do topo e no filtro do catálogo; consulta vazia e ordenações preservadas.
+- **Hero novo**: o manípulo que girava no hover deu lugar a uma vitrine com as três peças (Amortecedor Tradicional com Chapa, Mola Flex 2 Chapas, PNA Pé Nivelador) em revezamento automático a cada 6 s com crossfade suave, flutuação leve e inclinação 3D sutil ao mouse; as duas peças fora do palco viram seletores laterais com os verbos Amortecer/Flexionar/Nivelar; rótulo técnico acompanha a peça ativa. Pausa no hover, ordem inicial aleatória, respeita redução de movimento.
+- **Imagens do hero com transparência real** (public/images/hero/, 22–32 KB cada) geradas por scripts/generate-hero-alpha.py (flood-fill do fundo a partir das bordas) — elimina o truque de blend que falhava dentro de perspective.
+- Validação: tsc 0 erros, build:pages OK, Playwright 12/12 (vitrine + 6 consultas com typo/sinônimo/plural + exato no topo), mobile sem scroll lateral.
+
 # V2 — Identidade comercial e navegação por famílias — 12/11/2026 — v2.9.0
 
 - Slogan novo no hero: "Conectando peças, soluções e indústrias." + subtítulo oficial.

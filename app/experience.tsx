@@ -56,6 +56,7 @@ import { BrandPartners, ContactDetails } from "./showcase";
 import { Pic } from "./pic";
 import { FamiliesIndex } from "./families-index";
 import { familyGroups } from "@/lib/family-groups";
+import { searchScores } from "@/lib/search";
 
 const megaGroups = familyGroups();
 import { WhatsAppIcon } from "./whatsapp-icon";
@@ -363,26 +364,22 @@ export default function Experience({
   const [selectedPhoto, setSelectedPhoto] = useState("");
   const chosen = detail?.variations.find((v) => v.label === variant);
   const currentImage = selectedPhoto || chosen?.image || detail?.image;
+  const queryScores = searchScores(query);
   const found = products
     .filter(
       (p) =>
         (cat === "Todas" || p.categories.some((c) => c.name === cat)) &&
         (supplier === "Todos" || (p.supplier || p.brand) === supplier) &&
         (!onlySaved || saved.includes(p.id)) &&
-        normalize(
-          p.name +
-            " " +
-            p.summary +
-            " " +
-            (p.supplier || p.brand) +
-            " " +
-            p.variations.map((v) => v.label).join(" "),
-        ).includes(normalize(query)),
+        (!queryScores || queryScores.has(p.id)),
     )
     .sort((a, b) =>
       sort === "variants"
         ? b.variations.length - a.variations.length
-        : (!query &&
+        : (queryScores
+            ? queryScores.get(b.id)! - queryScores.get(a.id)!
+            : 0) ||
+          (!query &&
           cat === "Todas" &&
           !onlySaved &&
           products.filter((p) => p.homepage).length === 12
