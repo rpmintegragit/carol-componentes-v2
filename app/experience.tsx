@@ -697,7 +697,7 @@ export default function Experience({
                 : closeProduct()
             }
           >
-            Componentes
+            Produtos
           </button>
           <ChevronRight size={14} />
           <span>{detail.categories[0]?.name}</span>
